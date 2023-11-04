@@ -1,0 +1,297 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta charset="UTF-8">
+    <title>We've Been Together</title>
+    <style>
+        body {
+            margin: 0;
+            background: #fdfdfd; 
+            overflow: hidden; 
+        }
+
+        #together {
+            font-family: 'Comic Sans MS', cursive;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            padding-top: 20px;
+            color: #ffffff;
+            text-shadow: 2px 2px 2px rgb(0, 0, 0); 
+        }
+
+        #timer-container {
+            text-align: center; 
+            background: #ffc0cb;
+            padding: 5px 10px; 
+            border-radius: 10px; 
+        }
+
+        #timer {
+            font-family: 'Comic Sans MS', cursive;
+            font-size: 36px;
+            font-weight: bold;
+            color: #fff; 
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); 
+        }
+
+        #d, #h, #m, #s {
+            font-family: 'Comic Sans MS', cursive;
+            font-size: 30px; 
+        }
+
+        #content-container {
+            position: relative;
+            z-index: 2;
+        }
+
+        #slideshow-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        #image {
+            max-height: 400px;
+            width: auto;
+            border-radius: 10px;
+        }
+
+        #message {
+            font-size: 18px;
+            text-align: center;
+            color: #ff1493;
+        }
+
+        #heart-container {
+            text-align: center;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+        }
+
+        #glowing-heart {
+            font-size: 50px;
+            color: #ff1493;
+            cursor: pointer;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        #petal-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        
+        .pink-strip {
+            background: #ffc0cb;
+            height: 100px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            z-index: 0;
+        }
+        #music-controls {
+    text-align: center;
+    position: fixed;
+    bottom: 20px;
+    right: 20px; 
+    z-index: 3;
+  }
+
+  #playButton, #pauseButton {
+    background-color: #ff1493; 
+    color: #fff; 
+    padding: 10px 20px; 
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+    margin: 0 10px; 
+  }
+    </style>
+</head>
+<body>
+<canvas id="petal-canvas"></canvas>
+<div id="content-container">
+    <h1 id="together">TOGETHER FOR</h1>
+    <div id="timer-container">
+        <div id="timer">
+            <b id="d">00</b> <span style="font-size: 18px;">Days</span>
+            <b id="h">00</b> <span style="font-size: 18px;">Hours</span>
+            <b id="m">00</b> <span style="font-size: 18px;">Minutes</span>
+            <b id="s">00</b> <span style="font-size: 18px;">Seconds</span>
+        </div>
+    </div>
+    
+    <div id="slideshow-container">
+        <img id="image" src="pic/pic1.png" alt="Image 1">
+        <p id="message">你好哇，小可爱~</p>
+    </div>
+</div>
+<div id="heart-container" onclick="redirectToPage3()">
+    <div id="glowing-heart">🩷</div>
+</div>
+
+<div class="pink-strip"></div>
+
+<audio id="music" src="Nahuhulog.mp3"></audio>
+<div id="music-controls">
+  <button id="playButton">Play</button>
+  <button id="pauseButton">Pause</button>
+</div>
+    <script>
+        var images = ["pic/pic0.png","pic/pic1.png", "pic/pic2.png","pic/pic2_1.jpg","pic/pic2_2.jpg","pic/pic2_3.png", "pic/pic3.png","pic/pic3_1.jpg","pic/pic3_2.jpg", "pic/pic3_3.jpg","pic/pic3_4.jpg","pic/pic3_5.jpg","pic/pic3_6.jpg","pic/pic4.png", "pic/pic5.png","pic/pic5_1.jpg", "pic/pic5_2.jpg","pic/pic5_3.jpg","pic/pic6.png", "pic/pic7.png", "pic/pic7_1.jpg", "pic/pic8.png", "pic/pic9.png", "pic/pic10.png", "pic/pic10_1.jpg","pic/pic11.png","pic/pic11_1.jpg", "pic/pic12.png", "pic/pic13.png", "pic/pic14.png", "pic/pic16.png", "pic/pic15.png","pic/pic17.jpg","pic/pic18.jpg"];
+        var messages = ["Hi simple compilation lang ng activities natin together <3","Our First Ever Pic (scitech days sheesh)", "1st SM date, day na dapat aamin ako pero di kinaya hehe","First pic sa iphone after mawala yung oppo sheesh sino kaya nagwala hmmmz","Promposal picture heheh prom date ko nga pala toh","Flowers secured gandaa hihi", "Prom Night, The day I said I like you, and you said you like me too","Impulsive samgyupsal sa pook (nakisama si gwin)","Date bago kayo magrecord ng batch song","Aww sweet mo naman","Uy si ami AHHSA tinanong q pa si ez kung meron kayo niyan","Date para bigay si ami tas diretso robinson hehi","Last hatid as a scitech student, and ung day na nagpaalam kay Ms V.", "Some Matcha dates natin (dami na sheesh luv it)", "Graduation Day picture natin","First punta sa elbi kasama kasama sina sandy luis bruh","Abad farewell party ey","Barbie date w/ reading era", "Bday ni james hehe wala lang cute", "Si doggie and cattie oh, our roblox fam <3","Punta muna HK bago umuwi sa batangas ", "1st punta sa Batangas(solo), eyelash extension date", "1st ever punta sa elbi date na tayo lang dalawa", "Our study session na puro summer I turned pretty hehe","Cute date lang hehe walang mahanap na upuan", "Bday ni sandy hehe cute, (funfact: Want q lagi nakikita yung sugki mo, ang cute HASHAH I love seeing you smile hehe:) )","Ano kaya nangyari nung araw na toh hmmm ;)","Really enjoyed this date hehe para tayong mga bata HASHAH", "llao llao date sheesh desruv", "The day na binigay mo sakin yung gifts, and many more happenings :)", "I feel your comfortableness aroud me hehe (moments before you know ;))", "The place where you said I love you to me","Thank you for making this Man the happiest guy ever 😁","I love you so much 🩷"];
+        var currentIndex = 0;
+
+        function updateSlideshow() {
+            document.getElementById("image").src = images[currentIndex];
+            document.getElementById("message").textContent = messages[currentIndex];
+
+            currentIndex = (currentIndex + 1) % images.length;
+        }
+
+        document.getElementById("slideshow-container").addEventListener("click", function () {
+            updateSlideshow();
+        });
+
+        updateSlideshow();
+
+        function updateTimer() {
+            var start = new Date(2023, 9, 26, 22, 2);
+            var now = new Date();
+            var t = now - start;
+            var d = Math.floor(t / (1000 * 60 * 60 * 24));
+            var h = Math.floor((t % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var m = Math.floor((t % (1000 * 60 * 60)) / (1000 * 60));
+            var s = Math.floor((t % (1000 * 60)) / 1000);
+
+            document.getElementById("d").textContent = d < 10 ? "0" + d : d;
+            document.getElementById("h").textContent = h < 10 ? "0" + h : h;
+            document.getElementById("m").textContent = m < 10 ? "0" + m : m;
+            document.getElementById("s").textContent = s < 10 ? "0" + s : s;
+        }
+
+        setInterval(updateTimer, 1000);
+
+        function redirectToPage3() {
+
+            window.location.href = "page3.html";
+        }
+        const canvas = document.getElementById('petal-canvas');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const ctx = canvas.getContext('2d');
+
+      const TOTAL = 100;
+      const petalArray = [];
+
+      const petalImg = new Image();
+      petalImg.src = 'https://djjjk9bjm164h.cloudfront.net/petal.png';
+      petalImg.addEventListener('load', () => {
+        for (let i = 0; i < TOTAL; i++) {
+          petalArray.push(new Petal());
+        }
+        render();
+      });
+
+      function render() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        petalArray.forEach(petal => petal.animate());
+        window.requestAnimationFrame(render);
+      }
+
+      window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      });
+
+      let mouseX = 0;
+      function touchHandler(e) {
+        mouseX = (e.clientX || e.touches[0].clientX) / window.innerWidth;
+      }
+      window.addEventListener('mousemove', touchHandler);
+      window.addEventListener('touchmove', touchHandler);
+
+     
+      class Petal {
+        constructor() {
+          this.x = Math.random() * canvas.width;
+          this.y = (Math.random() * canvas.height * 2) - canvas.height;
+          this.w = 25 + Math.random() * 15;
+          this.h = 20 + Math.random() * 10;
+          this.opacity = this.w / 40;
+          this.flip = Math.random();
+
+          this.xSpeed = 0.5 + Math.random() * 0.5;
+          this.ySpeed = 0.4 + Math.random() * 0.4;
+          this.flipSpeed = Math.random() * 0.02;
+        }
+
+        draw() {
+          if (this.y > canvas.height || this.x > canvas.width) {
+            this.x = -petalImg.width;
+            this.y = (Math.random() * canvas.height * 2) - canvas.height;
+            this.xSpeed = 0.5 + Math.random() * 0.5;
+            this.ySpeed = 0.4 + Math.random() * 0.4;
+            this.flip = Math.random();
+          }
+          ctx.globalAlpha = this.opacity;
+          ctx.drawImage(
+            petalImg,
+            this.x,
+            this.y,
+            this.w * (0.6 + (Math.abs(Math.cos(this.flip)) / 3)),
+            this.h * (0.8 + (Math.abs(Math.sin(this.flip)) / 5))
+          );
+        }
+
+        animate() {
+          this.x += this.xSpeed + mouseX * 2;
+          this.y += this.ySpeed + mouseX * 0.5;
+          this.flip += this.flipSpeed;
+          this.draw();
+        }
+      }
+      const audio = document.getElementById('music');
+  const playButton = document.getElementById('playButton');
+  const pauseButton = document.getElementById('pauseButton');
+
+  
+  playButton.addEventListener('click', function() {
+    audio.play();
+    playButton.style.display = 'none';
+    pauseButton.style.display = 'inline-block';
+  });
+
+  
+  pauseButton.addEventListener('click', function() {
+    audio.pause();
+    playButton.style.display = 'inline-block';
+    pauseButton.style.display = 'none';
+  });
+</script>
+</body>
+</html>

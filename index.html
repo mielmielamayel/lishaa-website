@@ -1,0 +1,141 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta charset="UTF-8">
+    <title>First Anniversary of Love</title>
+    <style>
+        body {
+            margin: 0;
+            background: rgb(248, 20, 134); 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden; 
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewbox="0 0 32 32"><text x="0" y="20" font-size="20" fill="red">💗</text></svg>'), auto;
+        }
+
+        #heart-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1; 
+        }
+
+        a {
+            text-decoration: none; 
+        }
+
+        #heart {
+            font-size: 200px; 
+            color: #ff1493; 
+            cursor: pointer;
+            animation: pulse 1s infinite; 
+        }
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2); 
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="petal-canvas"></canvas>
+    <div id="heart-container">
+        <a href="page2.html">
+            <div style="text-align: center;">
+                <h1 id="heart">💗</h1>
+                <p style="font-family: 'Comic Sans MS', cursive; font-size: 18px; color: white; font-weight: bold; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); margin-top: 0;">Click The Heart 💗</p>
+            </div>
+        </a>
+    </div>
+    
+    <script>
+const canvas = document.getElementById('petal-canvas');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+const ctx = canvas.getContext('2d');
+
+const TOTAL = 100;
+const petalArray = [];
+
+const petalImg = new Image();
+petalImg.src = 'https://djjjk9bjm164h.cloudfront.net/petal.png'; 
+petalImg.addEventListener('load', () => {
+  for (let i = 0; i < TOTAL; i++) {
+    petalArray.push(new Petal());
+  }
+  render();
+});
+
+function render() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  petalArray.forEach(petal => petal.animate());
+  window.requestAnimationFrame(render);
+}
+
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+
+let mouseX = 0;
+function touchHandler(e) {
+  mouseX = (e.clientX || e.touches[0].clientX) / window.innerWidth;
+}
+window.addEventListener('mousemove', touchHandler);
+window.addEventListener('touchmove', touchHandler);
+
+// Petal class
+class Petal {
+  constructor() {
+    this.x = Math.random() * canvas.width;
+    this.y = (Math.random() * canvas.height * 2) - canvas.height;
+    this.w = 25 + Math.random() * 15;
+    this.h = 20 + Math.random() * 10;
+    this.opacity = this.w / 40;
+    this.flip = Math.random();
+
+    this.xSpeed = 0.5 + Math.random() * 0.5;
+    this.ySpeed = 0.4 + Math.random() * 0.4;
+    this.flipSpeed = Math.random() * 0.02;
+  }
+
+  draw() {
+    if (this.y > canvas.height || this.x > canvas.width) {
+      this.x = -petalImg.width;
+      this.y = (Math.random() * canvas.height * 2) - canvas.height;
+      this.xSpeed = 1.5 + Math.random() * 2;
+      this.ySpeed = 1 + Math.random() * 1;
+      this.flip = Math.random();
+    }
+    ctx.globalAlpha = this.opacity;
+    ctx.drawImage(
+      petalImg, 
+      this.x, 
+      this.y, 
+      this.w * (0.6 + (Math.abs(Math.cos(this.flip)) / 3)), 
+      this.h * (0.8 + (Math.abs(Math.sin(this.flip)) / 5))
+    );
+  }
+
+  animate() {
+    this.x += this.xSpeed + mouseX * 5;
+    this.y += this.ySpeed + mouseX * 2;
+    this.flip += this.flipSpeed;
+    this.draw();
+  }
+}
+
+    </script>
+</body>
+</html>
